@@ -114,8 +114,9 @@ export default function Home() {
         }
       };
       if (returned == false) {
+        loading.innerHTML = ``;
         err_msg.innerHTML = `<div class="text-3xl">Country not found or not supported</div>`;
-        result.innerHTML = ``;
+        return;
       }
     } catch (error) {
       console.error(error);

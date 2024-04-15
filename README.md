@@ -1,12 +1,12 @@
 # Streamable
 
-Welcome to Movie Search and Streamable! This application allows users to search for a movie and specify a region to find out the movie's introduction and its availability on various streaming services.
+Welcome to Streamable! This application allows users to search for a movie and specify a region to find out the movie's introduction and its availability on various streaming services.
 
 ## Features
 
 - **Search**: Users can search for a movie by entering its title.
 - **Region Selection**: Users can specify their region to find out the availability of the movie on streaming services in that region.
-- **Movie Introduction**: The application provides the introduction of the searched movie.
+- **Movie Introduction**: The application provides the general info of the searched movie.
 - **Streaming Availability**: Users can see a list of streaming services where the movie is available for streaming in their specified region.
 
 ## How to Use
@@ -27,7 +27,7 @@ Welcome to Movie Search and Streamable! This application allows users to search 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/movie-search.git
+    git clone https://github.com/kyranchen/Streamable.git
     cd movie-search
     ```
 

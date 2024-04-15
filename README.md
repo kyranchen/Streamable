@@ -28,7 +28,7 @@ Welcome to Streamable! This application allows users to search for a movie and s
 
     ```bash
     git clone https://github.com/kyranchen/Streamable.git
-    cd movie-search
+    cd my-app
     ```
 
 2. Install dependencies:
@@ -40,7 +40,7 @@ Welcome to Streamable! This application allows users to search for a movie and s
 3. Start the server:
 
     ```bash
-    npm start
+    npm run dev
     ```
 
 4. Open your web browser and navigate to `http://localhost:3000` to access the application.

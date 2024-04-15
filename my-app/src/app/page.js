@@ -1,24 +1,34 @@
 "use client";
 import { useState } from "react";
+import { authorization } from "@/app/key";
 
 export default function Home() {
   //Takes an array with all the cast members and format the data into html code
   function handleCast(arr) {
+    if (arr == null || arr.length == 0) {
+      return `<div class="antialiased text-lg">Not available!</div>`;
+    }
+    let counter = 0;
     let res = "";
-    for (let i = 0; i < 4; i++) {
-      const actor_profile = arr[i].profile_path;
-      if (actor_profile) {
+    for (let i = 0; i < arr.length; i++) {
+      //Only return the top 4 cast members
+      if (counter >= 4) {
+        break;
+      }
+      if (arr[i].profile_path) {
+        const actor_profile = arr[i].profile_path;
         const profile_path_url = `https://image.tmdb.org/t/p/w500${ actor_profile }`;
         res += `<div class="bg-white rounded-lg p-4 flex flex-col items-center">
           <img src="${ profile_path_url }" alt="Actor" class="object-scale-down h-24 w-24 rounded-full mb-2"></img>`
       } else {
         res += `
-          <img src="https://via.placeholder.com/150" alt="Actor" class="object-scale-down h-24 w-24 rounded-full mb-2">`
+          <img src="https://via.placeholder.com/150" alt="Actor" class="object-scale-down h-24 w-16 rounded-full mb-2">`
       }
       res += `
         <span class="text-base font-semibold">${ arr[i].name }</span>
         <span class="text-gray-600">${ arr[i].character }</span>
         </div>`
+      counter += 1;
     }
     return res;
   }
@@ -30,7 +40,7 @@ export default function Home() {
     return res;
   }
   function handleService(arr) {
-    if (arr == null) {
+    if (arr == null || arr.length == 0) {
       return `<div class="antialiased text-lg">Not available!</div>`;
     }
     let res = "";
@@ -127,8 +137,9 @@ export default function Home() {
     try {
       const response = await fetch(title_url, title_options);
       const res = await response.json();
-      first_result = await res.results[0];
-      
+      if (res.results) {
+        first_result = await res.results[0];
+      }
     } catch (error) {
       console.error(error);
     }
@@ -151,7 +162,11 @@ export default function Home() {
       const res = await response.json();
       for (const key in res.results) {
         if (key == country_code) {
-          service = handleService(res.results[key]["flatrate"]);
+          if (res.results[key]["flatrate"]) {
+            service = handleService(res.results[key]["flatrate"]);
+          } else {
+            service = "";
+          }
         }
       }
     } catch (error) {
@@ -165,8 +180,7 @@ export default function Home() {
         accept: 'application/json',
         Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWM0M2UzMmYwNDczNzRiZGFkMjY0NGY0NDA2NDkyNiIsInN1YiI6IjY2MThkZjUwYmJjYWUwMDE2Mjk0ZjUwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHWq1YfLbXiC7iLYXC0ZDuy8C6Oc2zvG0Z6WdGVurG0'
       }
-    };
-
+    }
     try {
       const response = await fetch(movie_url, movie_options);
       const res = await response.json();
@@ -175,17 +189,16 @@ export default function Home() {
       if (res.genres) {
         genre = handleGenre(await res.genres);
       }
-      if (res.credits.cast) {
+      if (res.credits && res.credits.cast) {
         credits = handleCast(await res.credits.cast);
       }
       loading.innerHTML = ``;
-      //const genre = handleGenre(await res.genres)
       result.innerHTML = `
         <!-- Movie Poster and Overview Section -->
         <div class="flex flex-col md:flex-row">
             <!-- Movie Poster -->
             <div class="md:w-1/3">
-                <img src="https://image.tmdb.org/t/p/w500${ res.poster_path }" alt="Movie Poster" class="rounded-lg">
+                <img src="https://image.tmdb.org/t/p/w500${ res.poster_path }" alt="Movie Poster" class="">
             </div>
             <!-- Movie Overview -->
             <div class="md:w-2/3 md:pl-8">
@@ -242,7 +255,7 @@ export default function Home() {
       </div> 
       <div id="err_msg" className="p-4"></div>
       <div id="loading" className="flex flex-col md:flex-row"></div>
-      <div id="result" className="container mx-auto px-4 py-8"></div>
+      <div id="result" className="container mx-auto px-8 py-8"></div>
     </div>
     
   )

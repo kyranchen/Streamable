@@ -143,7 +143,13 @@ export default function Home() {
     } catch (error) {
       console.error(error);
     }
-    
+    //Handle Error if movie is not found from the request
+    if (first_result == undefined) {
+      loading.innerHTML = ``;
+      err_msg.innerHTML = `<div class="text-3xl mt-4">Movie not found</div>`;
+      return;
+    }
+
     //From the result, format the result response so it shows what streaming services are available
     const movie_id = first_result.id;
     let service = "";
@@ -165,7 +171,7 @@ export default function Home() {
           if (res.results[key]["flatrate"]) {
             service = handleService(res.results[key]["flatrate"]);
           } else {
-            service = "";
+            service = `<div class="antialiased text-lg">Not available!</div>`;
           }
         }
       }

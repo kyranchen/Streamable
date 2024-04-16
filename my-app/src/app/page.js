@@ -18,16 +18,14 @@ export default function Home() {
       if (arr[i].profile_path) {
         const actor_profile = arr[i].profile_path;
         const profile_path_url = `https://image.tmdb.org/t/p/w500${ actor_profile }`;
-        res += `<div class="bg-white rounded-lg p-4 flex flex-col items-center">
-          <img src="${ profile_path_url }" alt="Actor" class="object-scale-down h-24 w-24 rounded-full mb-2"></img>`
-      } else {
+        res += `<div class="rounded-lg p-4 flex flex-col items-center">
+          <img src="${ profile_path_url }" alt="Actor" class="object-scale-down h-32 w-32 rounded-full mb-2">`;
         res += `
-          <img src="https://via.placeholder.com/150" alt="Actor" class="object-scale-down h-24 w-16 rounded-full mb-2">`
-      }
-      res += `
         <span class="text-base font-semibold">${ arr[i].name }</span>
         <span class="text-gray-600">${ arr[i].character }</span>
-        </div>`
+        </div>`;
+      }
+      
       counter += 1;
     }
     return res;
@@ -48,15 +46,13 @@ export default function Home() {
       const logo_profile = arr[i].logo_path;
       if (logo_profile) {
         const logo_path_url = `https://image.tmdb.org/t/p/w500${ logo_profile }`;
-        res += `<div class="bg-white rounded-lg p-4 flex flex-col items-center">
-          <img src="${ logo_path_url }" alt="Actor" class="object-scale-down h-16 w-16 rounded-full mb-2"></img>`
-      } else {
+        res += `<div class="rounded-lg p-4 flex flex-col items-center">
+          <img src="${ logo_path_url }" alt="Actor" class="object-scale-down h-16 w-16 rounded-full mb-2"></img>`;
         res += `
-          <img src="https://via.placeholder.com/150" alt="Actor" class="object-scale-down h-16 w-16 rounded-full mb-2">`
-      }
-      res += `
-        <span class="text-base font-semibold text-center">${ arr[i].provider_name }</span>
-        </div>`
+          <span class="text-base font-semibold text-center">${ arr[i].provider_name }</span>
+          </div>`;
+      } 
+      
     }
     return res;
   }
@@ -64,8 +60,8 @@ export default function Home() {
     const err_msg = document.getElementById("err_msg");
     const loading = document.getElementById("loading");
     const result = document.getElementById("result");
-    result.innerHTML = ``;
-    err_msg.innerHTML = ``;
+    result.innerHTML = `<div class="bg-gradient-to-r from-neutral-300 to-stone-400"></div>`;
+    err_msg.innerHTML = `<div class="bg-gradient-to-r from-neutral-300 to-stone-400"></div>`;
     //Play loading animation
     loading.innerHTML = `
       <div class="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
@@ -109,7 +105,6 @@ export default function Home() {
         if (res.results[index].english_name == name || res.results[index].native_name == name) {
           country_code = res.results[index].iso_3166_1;
           returned = true;
-          console.log(country_code);
           break;
         }
       };
@@ -167,14 +162,19 @@ export default function Home() {
     try {
       const response = await fetch(movie_id_url, movieUrl_options);
       const res = await response.json();
+
       for (const key in res.results) {
         if (key == country_code) {
+          console.log(res.results[key]);
           if (res.results[key]["flatrate"]) {
             service = handleService(res.results[key]["flatrate"]);
           } else {
             service = `<div class="antialiased text-lg">Not available!</div>`;
           }
         }
+      }
+      if (service == "") {
+        service = `<div class="antialiased text-lg">Not available!</div>`;
       }
     } catch (error) {
       console.error('error:' + error);
@@ -199,14 +199,16 @@ export default function Home() {
       if (res.credits && res.credits.cast) {
         credits = handleCast(await res.credits.cast);
       }
+      /*
+      <h2 class="text-xl font-semibold">Top Cast</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        ${ credits }
+      </div>
+      */
       loading.innerHTML = ``;
       result.innerHTML = `
         <!-- Movie Poster and Overview Section -->
-        <div class="flex flex-col md:flex-row">
-            <!-- Movie Poster -->
-            <div class="md:w-1/3">
-                <img src="https://image.tmdb.org/t/p/w500${ res.poster_path }" alt="Movie Poster" class="">
-            </div>
+        <div class="p-4 flex flex-col md:flex-row bg-gradient-to-r from-slate-300 to-slate-500 rounded-lg">
             <!-- Movie Overview -->
             <div class="md:w-2/3 md:pl-8">
                 <h1 class="text-3xl font-semibold mb-2">${ res.title }</h1>
@@ -227,18 +229,19 @@ export default function Home() {
                         <span>${ res.vote_average }/10</span>
                     </div>
                 </div>
-                <div class="flex items-center mb-4">
+                <div class="flex items-center mb-6">
                     <span class="text-gray-600 mr-2">Genres:</span>
                     <span>${ genre }</span>
                 </div>
-                <h2 class="text-xl font-semibold">Cast</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        ${ credits }
-                </div>
-                <h2 class="text-xl font-semibold mb-2">Streaming Services in ${ country.value }</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <h2 class="text-xl font-semibold mb-4">Streaming Services in ${ country.value }</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 auto-rows-max gap-4 mb-4">
                         ${ service }
                 </div>
+                
+            </div>
+            <!-- Movie Poster -->
+            <div class="md:w-1/3">
+                <img src="https://image.tmdb.org/t/p/w500${ res.poster_path }" alt="Movie Poster" class="rounded-lg">
             </div>
         </div>
     `;
@@ -253,17 +256,18 @@ export default function Home() {
   const [titleInput, setTitleInput] = useState("");
 
   return (
-    <div id="main" className="flex flex-col justify-center items-center">
-      <div className="p-10 text-6xl text-stone-700">Streamable</div>
-      <div className="flex gap-1">
-        <input type="text" id="country" className="border rounded border-black p-2" placeholder="Enter region here..." value = { countryInput } onChange={(e) => setCountryInput(e.target.value)}></input>
-        <input type="text" id="title" className="border rounded border-black p-2" placeholder="Enter title here..." value = { titleInput } onChange={(e) => setTitleInput(e.target.value)}></input>
-        <button className="rounded p-2 bg-cyan-400 hover:bg-sky-400" onClick={handleSubmit}>Submit</button>
-      </div> 
-      <div id="err_msg" className="p-4"></div>
-      <div id="loading" className="flex flex-col md:flex-row"></div>
-      <div id="result" className="container mx-auto px-8 py-8"></div>
-    </div>
-    
+    <body className="bg-gradient-to-r from-neutral-300 to-stone-400 min-h-screen">
+      <div id="main" className="flex flex-col justify-center items-center">
+        <div className="p-10 text-6xl text-stone-700">Streamable</div>
+        <div className="flex gap-1">
+          <input type="text" id="country" className="border rounded border-black p-2" placeholder="Enter region here..." value = { countryInput } onChange={(e) => setCountryInput(e.target.value)}></input>
+          <input type="text" id="title" className="border rounded border-black p-2" placeholder="Enter title here..." value = { titleInput } onChange={(e) => setTitleInput(e.target.value)}></input>
+          <button className="rounded p-2 bg-cyan-400 hover:bg-sky-400" onClick={handleSubmit}>Submit</button>
+        </div> 
+        <div id="err_msg" className="p-4"></div>
+        <div id="loading" className="w-screen"></div>
+        <div id="result" className="container mx-auto px-4 py-8 mb-16"></div>
+      </div>
+    </body>
   )
 }

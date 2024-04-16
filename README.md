@@ -24,26 +24,33 @@ Welcome to Streamable! This application allows users to search for a movie and s
 
 ## Installation
 
-1. Clone the repository:
+1. Create an account on Tmdb and get API key
+    [Click here](https://developer.themoviedb.org/docs/getting-started)
+
+2. Clone the repository:
 
     ```bash
     git clone https://github.com/kyranchen/Streamable.git
     cd my-app
     ```
 
-2. Install dependencies:
+3. Install dependencies:
 
     ```bash
     npm install
     ```
 
-3. Start the server:
+4. Import your API key to page.js
+    -- Create a file called key.js in src/app folder
+    -- Assign API key to the variable named authorization and export the variable
+
+5. Start the server:
 
     ```bash
     npm run dev
     ```
 
-4. Open your web browser and navigate to `http://localhost:3000` to access the application.
+6. Open your web browser and navigate to `http://localhost:3000` to access the application.
 
 ## Contributing
 

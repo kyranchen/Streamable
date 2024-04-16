@@ -86,13 +86,16 @@ export default function Home() {
     const name = country.value;
     let country_code = "";
 
+    //auth is the API key imported. You can get your own API key from tmdb API
+    const auth = 'Bearer ' + authorization;
+
     //Check if country is supported(Consider switching to tmdb)
     const country_url = 'https://api.themoviedb.org/3/watch/providers/regions?language=en-US';
     const country_options = {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWM0M2UzMmYwNDczNzRiZGFkMjY0NGY0NDA2NDkyNiIsInN1YiI6IjY2MThkZjUwYmJjYWUwMDE2Mjk0ZjUwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHWq1YfLbXiC7iLYXC0ZDuy8C6Oc2zvG0Z6WdGVurG0'
+        Authorization: `Bearer ${ authorization }`
       }
     };
 
@@ -126,7 +129,7 @@ export default function Home() {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWM0M2UzMmYwNDczNzRiZGFkMjY0NGY0NDA2NDkyNiIsInN1YiI6IjY2MThkZjUwYmJjYWUwMDE2Mjk0ZjUwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHWq1YfLbXiC7iLYXC0ZDuy8C6Oc2zvG0Z6WdGVurG0'
+        Authorization: `Bearer ${ authorization }`
       }
     };
 
@@ -155,7 +158,7 @@ export default function Home() {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWM0M2UzMmYwNDczNzRiZGFkMjY0NGY0NDA2NDkyNiIsInN1YiI6IjY2MThkZjUwYmJjYWUwMDE2Mjk0ZjUwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHWq1YfLbXiC7iLYXC0ZDuy8C6Oc2zvG0Z6WdGVurG0'
+        Authorization: `Bearer ${ authorization }`
       }
     };
 
@@ -165,7 +168,6 @@ export default function Home() {
 
       for (const key in res.results) {
         if (key == country_code) {
-          console.log(res.results[key]);
           if (res.results[key]["flatrate"]) {
             service = handleService(res.results[key]["flatrate"]);
           } else {
@@ -185,7 +187,7 @@ export default function Home() {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWM0M2UzMmYwNDczNzRiZGFkMjY0NGY0NDA2NDkyNiIsInN1YiI6IjY2MThkZjUwYmJjYWUwMDE2Mjk0ZjUwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHWq1YfLbXiC7iLYXC0ZDuy8C6Oc2zvG0Z6WdGVurG0'
+        Authorization: `Bearer ${ authorization }`
       }
     }
     try {
@@ -256,7 +258,7 @@ export default function Home() {
   const [titleInput, setTitleInput] = useState("");
 
   return (
-    <body className="bg-gradient-to-r from-neutral-300 to-stone-400 min-h-screen">
+    <div className="bg-gradient-to-r from-neutral-300 to-stone-400 min-h-screen">
       <div id="main" className="flex flex-col justify-center items-center">
         <div className="p-10 text-6xl text-stone-700">Streamable</div>
         <div className="flex gap-1">
@@ -268,6 +270,6 @@ export default function Home() {
         <div id="loading" className="w-screen"></div>
         <div id="result" className="container mx-auto px-4 py-8 mb-16"></div>
       </div>
-    </body>
+    </div>
   )
 }

@@ -210,12 +210,11 @@ export default function Home() {
       loading.innerHTML = ``;
       result.innerHTML = `
         <!-- Movie Poster and Overview Section -->
-        <div class="p-4 flex flex-col md:flex-row bg-gradient-to-r from-slate-300 to-slate-500 rounded-lg">
+        <div class="p-4 flex flex-col gap-5 md:flex-row bg-gradient-to-r from-slate-300 to-slate-500 rounded-lg">
             <!-- Movie Overview -->
             <div class="md:w-2/3 md:pl-8">
                 <h1 class="text-3xl font-semibold mb-2">${ res.title }</h1>
                 <div class="flex items-center text-sm mb-2">
-                    
                     <span class="mr-2">${ res.runtime } mins</span>
                     <span class="mr-2">${ res.release_date }</span>
                 </div>
@@ -242,7 +241,7 @@ export default function Home() {
                 
             </div>
             <!-- Movie Poster -->
-            <div class="md:w-1/3">
+            <div class="md:w-1/3 content-center">
                 <img src="https://image.tmdb.org/t/p/w500${ res.poster_path }" alt="Movie Poster" class="rounded-lg">
             </div>
         </div>

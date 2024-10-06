@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { authorization } from "@/app/key";
 
 export default function Home() {
@@ -252,19 +252,60 @@ export default function Home() {
     }
   };
 
-  
-  
+  async function fetchRegions() {
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${ authorization }`
+      }
+    };
+    
+    let url = 'https://api.themoviedb.org/3/watch/providers/regions?language=en-US';
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      
+      let countryNames = [];
+      for (let obj of data.results) {
+        countryNames.push(obj.english_name);
+      }
+      setCountryListInput(countryNames);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  //Main page
   const [countryInput, setCountryInput] = useState("");
   const [titleInput, setTitleInput] = useState("");
+  const [countryList, setCountryListInput] = useState([]);
+  
+  //Similar to onMounted in Vue
+  useEffect(() => {
+    //Fetch supported regions
+    fetchRegions();
+  }, []); 
 
   return (
     <div className="bg-gradient-to-r from-neutral-300 to-stone-400 min-h-screen">
       <div id="main" className="flex flex-col justify-center items-center">
         <div className="p-10 text-6xl text-stone-700">Streamable</div>
         <div className="flex gap-1">
-          <input type="text" id="country" className="border rounded border-black p-2" placeholder="Enter region here..." value = { countryInput } onChange={(e) => setCountryInput(e.target.value)}></input>
-          <input type="text" id="title" className="border rounded border-black p-2" placeholder="Enter title here..." value = { titleInput } onChange={(e) => setTitleInput(e.target.value)}></input>
-          <button className="rounded p-2 bg-cyan-400 hover:bg-sky-400" onClick={handleSubmit}>Submit</button>
+        <select 
+            id="country" 
+            className="border rounded border-black p-2" 
+            value={ countryInput } 
+            onChange={(e) => setCountryInput(e.target.value)}
+        >
+            <option value="">Select a country</option>
+            {countryList.map((country, index) => (
+              <option key={ index } value={ country }>
+                { country }
+              </option>
+            ))}
+        </select>
+        <input type="text" id="title" className="border rounded border-black p-2" placeholder="Enter title here..." value = { titleInput } onChange={(e) => setTitleInput(e.target.value)}></input>
+        <button className="rounded p-2 bg-cyan-400 hover:bg-sky-400" onClick={handleSubmit}>Submit</button>
         </div> 
         <div id="err_msg" className="p-4"></div>
         <div id="loading" className="w-screen"></div>

@@ -144,14 +144,23 @@ export default function Home() {
     }
   }
 
-  async function fetchRegions() {
+  async function fetchRegions(attempt = 0) {
+    setRegionsLoading(true);
     try {
       const res = await fetch("/api/regions");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      setRegionList(data.results ?? []);
-      setCountryListInput((data.results ?? []).map((r) => r.english_name));
+      if (!data.results?.length) throw new Error("Empty response");
+      setRegionList(data.results);
+      setCountryListInput(data.results.map((r) => r.english_name));
     } catch (error) {
-      console.log(error);
+      console.error("fetchRegions attempt", attempt, error);
+      // Retry up to 3 times with increasing delay (500ms, 1s, 2s).
+      if (attempt < 3) {
+        setTimeout(() => fetchRegions(attempt + 1), 500 * Math.pow(2, attempt));
+      }
+    } finally {
+      setRegionsLoading(false);
     }
   }
 
@@ -159,6 +168,7 @@ export default function Home() {
   const [titleInput, setTitleInput] = useState("");
   const [countryList, setCountryListInput] = useState([]);
   const [regionList, setRegionList] = useState([]);
+  const [regionsLoading, setRegionsLoading] = useState(true);
 
   useEffect(() => {
     fetchRegions();
@@ -176,11 +186,12 @@ export default function Home() {
       <div className="flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto w-full px-4 mb-6">
         <select
           id="country"
-          className="bg-zinc-800 text-white border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="bg-zinc-800 text-white border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50"
           value={countryInput}
           onChange={(e) => setCountryInput(e.target.value)}
+          disabled={regionsLoading}
         >
-          <option value="">Select a country</option>
+          <option value="">{regionsLoading ? "Loading countries..." : "Select a country"}</option>
           {countryList.map((country, index) => (
             <option key={index} value={country}>
               {country}

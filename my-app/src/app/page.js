@@ -76,34 +76,27 @@ export default function Home() {
     }
     const country_code = region.iso_3166_1;
 
-    let first_result;
+    let movie;
     try {
-      const res = await fetch(`/api/search?query=${encodeURIComponent(titleValue)}`);
+      const res = await fetch(
+        `/api/lookup?query=${encodeURIComponent(titleValue)}&country=${country_code}`
+      );
       if (res.status === 429) {
         loading.innerHTML = "";
         err_msg.innerHTML = `<p class="text-red-400 text-sm">Too many requests — please wait a moment</p>`;
         return;
       }
-      const data = await res.json();
-      first_result = data.results?.[0];
+      if (res.status === 404) {
+        loading.innerHTML = "";
+        err_msg.innerHTML = `<p class="text-red-400 text-sm">Movie not found</p>`;
+        return;
+      }
+      movie = await res.json();
     } catch (error) {
       console.error(error);
     }
 
-    if (!first_result) {
-      loading.innerHTML = "";
-      err_msg.innerHTML = `<p class="text-red-400 text-sm">Movie not found</p>`;
-      return;
-    }
-
     try {
-      const res = await fetch(`/api/movie/${first_result.id}?country=${country_code}`);
-      if (res.status === 429) {
-        loading.innerHTML = "";
-        err_msg.innerHTML = `<p class="text-red-400 text-sm">Too many requests — please wait a moment</p>`;
-        return;
-      }
-      const movie = await res.json();
 
       const genre = movie.genres ? handleGenre(movie.genres) : "";
       const service = handleService(movie.streamingProviders);
